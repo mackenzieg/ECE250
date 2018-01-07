@@ -49,7 +49,7 @@ void test_constructors() {
 }
 
 void test_pop() {
-  std::cout << "Testing Pop" << std::endl;
+  std::cout << "Testing pop" << std::endl;
 
   {
     Double_sentinel_list<int> list;
@@ -91,6 +91,25 @@ void test_pop() {
 }
 
 void test_search() {
+  std::cout << "Testing search" << std::endl;
 
+  {
+    Double_sentinel_list<int> list;
+
+    std::cout << "Found nothing in empty list (1): " << (list.find(5) == nullptr) << std::endl;
+    std::cout << "Count in empty list (0): " << list.count(5) << std::endl;
+
+    list.push_front(5);
+
+    std::cout << "Found correct node with single element (1): " << (list.find(5)->previous() == list.begin()) << std::endl;
+    std::cout << "Count in list with one element (1): " << list.count(5) << std::endl;
+
+    list.push_front(5);
+
+    std::cout << "Found correct node with multiple elements (1): " << (list.find(5)->previous() == list.begin()) << std::endl;
+    std::cout << "Count in list with multiple elements (2): " << list.count(5) << std::endl;
+
+    std::cout << "Count of objects not in list (0): " << list.count(-1) << std::endl;
+  }
 }
 
