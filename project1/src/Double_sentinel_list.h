@@ -1,9 +1,9 @@
 /*****************************************
- * UW User ID:  uwuserid
+ * UW User ID: mj2goodw 
  * Submitted for ECE 250
  * Department of Electrical and Computer Engineering
  * University of Waterloo
- * Calender Term of Submission:  (Winter|Spring|Fall) 20NN
+ * Calender Term of Submission:  Winter 2018
  *
  * By submitting this file, I affirm that
  * I am the author of all modifications to
