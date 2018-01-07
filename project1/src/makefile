@@ -1,6 +1,6 @@
 PROJ := ll
 
-SOURCES := Double_sentinel_list.h Exception.h test.cpp
+SOURCES := Double_sentinel_list.h Exception.h tb.cpp
 
 CFLAGS := -DDEBUG_PRINT
 CFLAGS += -g

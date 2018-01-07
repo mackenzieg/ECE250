@@ -116,10 +116,12 @@ Double_sentinel_list<Type>::Double_sentinel_list(Double_sentinel_list<Type> cons
 
 // Since we are just moving we can do a shallow copy
 template <typename Type>
-Double_sentinel_list<Type>::Double_sentinel_list(Double_sentinel_list<Type> &&list):
-                                                                 list_head(list.end()),
-                                                                 list_tail(list.begin()),
-                                                                 list_size(list.size()) {}
+Double_sentinel_list<Type>::Double_sentinel_list(Double_sentinel_list<Type> &&list) :
+                                 Double_sentinel_list() {
+  // Set list size to zero so that it doesn't try to access its data. Just to be safe
+  // also update the sentinels to point to each other
+  swap(list);
+}
 
 template <typename Type>
 Double_sentinel_list<Type>::~Double_sentinel_list() {
@@ -180,7 +182,6 @@ typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::rb
 
 template <typename Type>
 typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::rend() const {
-	// Enter your implementation here
 	return list_tail->previous();
 }
 
@@ -210,14 +211,14 @@ int Double_sentinel_list<Type>::count(Type const &obj) const {
 }
 
 template <typename Type>
-void Double_sentinel_list<Type>::swap( Double_sentinel_list<Type> &list ) {
-	std::swap( list_head, list.list_head );
-	std::swap( list_tail, list.list_tail );
-	std::swap( list_size, list.list_size );
+void Double_sentinel_list<Type>::swap(Double_sentinel_list<Type> &list) {
+	std::swap(list_head, list.list_head);
+	std::swap(list_tail, list.list_tail);
+	std::swap(list_size, list.list_size);
 }
 
 template <typename Type>
-Double_sentinel_list<Type> &Double_sentinel_list<Type>::operator=( Double_sentinel_list<Type> rhs ) {
+Double_sentinel_list<Type> &Double_sentinel_list<Type>::operator=(Double_sentinel_list<Type> rhs) {
 	swap(rhs);
 
 	return *this;
@@ -299,7 +300,6 @@ int Double_sentinel_list<Type>::erase(Type const &obj) {
     next = current->next();
     if (current->value() == obj) {
       erase_link(current);
-      --list_size;
       ++num_del;
     }
 
@@ -340,6 +340,7 @@ void Double_sentinel_list<Type>::erase_link(Double_node* node) {
   // Relink the remnaining links back together
   node->previous()->next_node = node->next();
   node->next()->previous_node = node->previous();
+  --list_size;
   delete node;
 }
 
