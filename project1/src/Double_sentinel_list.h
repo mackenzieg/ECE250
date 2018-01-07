@@ -117,7 +117,7 @@ Double_sentinel_list<Type>::Double_sentinel_list(Double_sentinel_list<Type> cons
 // Since we are just moving we can do a shallow copy
 template <typename Type>
 Double_sentinel_list<Type>::Double_sentinel_list(Double_sentinel_list<Type> &&list) :
-                                 Double_sentinel_list() {
+                                                 Double_sentinel_list() {
   // Set list size to zero so that it doesn't try to access its data. Just to be safe
   // also update the sentinels to point to each other
   swap(list);
@@ -188,7 +188,8 @@ typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::re
 template <typename Type>
 typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::find(Type const &obj) const {
   Double_node* current = rbegin();
-  while (current != list_tail) {
+  // Loop over objects until we hit the end sentinel
+  while (current != end()) {
     if (current->value() == obj) {
       return current;
     }
@@ -201,7 +202,8 @@ template <typename Type>
 int Double_sentinel_list<Type>::count(Type const &obj) const {
   int num = 0;
   Double_node* current = rbegin();
-  while (current != list_tail) {
+  // Same logic as find basically
+  while (current != end()) {
     if (current->value() == obj) {
       ++num;
     }
