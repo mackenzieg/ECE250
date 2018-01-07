@@ -1,15 +1,18 @@
 
 #include <iostream>
 #include "Double_sentinel_list.h"
+#include "Exception.h"
 
 void test_constructors();
 void test_pop();
 void test_search();
+void test_frontback();
 
 int main() {
   test_constructors();
   test_pop();
   test_search();
+  test_frontback();
 
 	return 0;
 }
@@ -110,6 +113,59 @@ void test_search() {
     std::cout << "Count in list with multiple elements (2): " << list.count(5) << std::endl;
 
     std::cout << "Count of objects not in list (0): " << list.count(-1) << std::endl;
+  }
+}
+
+void test_frontback() {
+  std::cout << "Testing front/back" << std::endl;
+
+  {
+    Double_sentinel_list<int> list;
+
+    bool caught = false;
+    try {
+      list.front();
+    } catch (underflow& e) {
+      caught = true;
+    }
+
+    std::cout << "Caught front exception (1): " << caught << std::endl;
+
+    caught = false;
+
+    try {
+      list.back();
+    } catch (underflow& e) {
+      caught = true;
+    }
+
+    std::cout << "Caught back exception (1): " << caught << std::endl;
+
+    list.push_front(6);
+    list.push_back(9);
+
+    caught = false;
+
+    try {
+      list.back();
+    } catch (underflow& e) {
+      caught = true;
+    }
+
+    std::cout << "Caught back exception (0): " << caught << std::endl;
+
+    caught = false;
+
+    try {
+      list.back();
+    } catch (underflow& e) {
+      caught = true;
+    }
+
+    std::cout << "Caught back exception (0): " << caught << std::endl;
+
+    std::cout << "Front value (6): " << list.front() << std::endl;
+    std::cout << "Back  value (9): " << list.back() << std::endl;
   }
 }
 
