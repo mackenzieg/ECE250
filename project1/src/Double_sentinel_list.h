@@ -51,8 +51,8 @@ class Double_sentinel_list {
 		Double_node *rbegin() const;
 		Double_node *rend() const;
 
-		Double_node *find( Type const & ) const;
-		int count( Type const & ) const;
+		Double_node *find(Type const &) const;
+		int count(Type const &) const;
 
 		// Mutators
 
@@ -60,8 +60,8 @@ class Double_sentinel_list {
 		Double_sentinel_list &operator=(Double_sentinel_list);
 		Double_sentinel_list &operator=(Double_sentinel_list &&);
 
-		void push_front( Type const & );
-		void push_back( Type const & );
+		void push_front(Type const &);
+		void push_back(Type const &);
 
 		void pop_front();
 		void pop_back();
@@ -265,14 +265,8 @@ void Double_sentinel_list<Type>::pop_front() {
   if (empty()) {
     return;
   }
-
-  // Update the node infront of the node we are removing and update its previous pointer
-  // to point to the head
-  Double_node* new_head = rbegin()->next_node;
-  new_head->previous_node = list_head;
-
-  delete list_head->next();
-  list_head->next_node = new_head;
+  
+  erase_link(rbegin());
 }
 
 // If list is empty this function will do nothing
@@ -282,12 +276,7 @@ void Double_sentinel_list<Type>::pop_back() {
     return;
   }
 
-  // Same logic as pop_front just reversed
-  Double_node* new_tail = rend()->previous();
-  new_tail->next_node = list_tail;
-
-  delete list_tail->previous();
-  list_tail->previous_node = new_tail;
+  erase_link(rend());
 }
 
 template <typename Type>
@@ -342,7 +331,9 @@ void Double_sentinel_list<Type>::erase_link(Double_node* node) {
   // Relink the remnaining links back together
   node->previous()->next_node = node->next();
   node->next()->previous_node = node->previous();
+  // Removed link so size goes down
   --list_size;
+  // Give allocated space back to the OS
   delete node;
 }
 
