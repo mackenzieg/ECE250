@@ -353,8 +353,7 @@ void Double_sentinel_list<Type>::erase_link(Double_node* node) {
 // You can modify this function however you want:  it will not be tested
 
 template <typename T>
-std::ostream &operator<<( std::ostream &out, Double_sentinel_list<T> const &list ) {
-
+std::ostream &operator<<(std::ostream &out, Double_sentinel_list<T> const &list) {
   out << "head->";
 
 	for (typename Double_sentinel_list<T>::Double_node *ptr = list.rbegin(); ptr != list.end(); ptr = ptr->next()) {
