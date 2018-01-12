@@ -103,7 +103,7 @@ Double_sentinel_list<Type>::Double_sentinel_list() :
 template <typename Type>
 Double_sentinel_list<Type>::Double_sentinel_list(Double_sentinel_list<Type> const &list) :
                      Double_sentinel_list() {
-  Double_node* current_node = list.rbegin();
+  Double_node* current_node = list.begin();
 
   // While current_node doesn't equal the tail sentinel
   while (current_node != list.end()) {
@@ -129,7 +129,7 @@ Double_sentinel_list<Type>::~Double_sentinel_list() {
   // but I already made this erase_link function so might as well use it.
   // Is destructor performance really important on the first project anyway???
   while (!empty()) {
-    erase_link(rbegin());
+    erase_link(begin());
   }
 
   delete list_head;
@@ -153,7 +153,7 @@ Type Double_sentinel_list<Type>::front() const {
     throw underflow();
   }
 
-	return rbegin()->value();
+	return begin()->value();
 }
 
 template <typename Type>
@@ -162,12 +162,12 @@ Type Double_sentinel_list<Type>::back() const {
     throw underflow();
   }
 
-	return rend()->value();
+	return rbegin()->value();
 }
 
 template <typename Type>
 typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::begin() const {
-	return list_head;
+	return list_head->next();
 }
 
 template <typename Type>
@@ -177,17 +177,17 @@ typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::en
 
 template <typename Type>
 typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::rbegin() const {
-	return list_head->next();
-}
-
-template <typename Type>
-typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::rend() const {
 	return list_tail->previous();
 }
 
 template <typename Type>
+typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::rend() const {
+	return list_head;
+}
+
+template <typename Type>
 typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::find(Type const &obj) const {
-  Double_node* current = rbegin();
+  Double_node* current = begin();
   // Loop over objects until we hit the end sentinel
   while (current != end()) {
     if (current->value() == obj) {
@@ -201,7 +201,7 @@ typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::fi
 template <typename Type>
 int Double_sentinel_list<Type>::count(Type const &obj) const {
   int num = 0;
-  Double_node* current = rbegin();
+  Double_node* current = begin();
   // Same logic as find basically
   while (current != end()) {
     if (current->value() == obj) {
@@ -237,11 +237,11 @@ template <typename Type>
 void Double_sentinel_list<Type>::push_front(Type const &obj) {
   // This should work even if list is empty as previous_head will be the tail sentinel
   // TODO rename these to something better such as previous_rbegin
-  Double_node* previous_head = rbegin();
+  Double_node* previous_head = begin();
   Double_node* new_node      = new Double_node(obj, list_head, previous_head);
 
   // Update pointers to new node
-  begin()->next_node           = new_node;
+  rend()->next_node            = new_node;
   previous_head->previous_node = new_node;
 
   ++list_size;
@@ -250,7 +250,7 @@ void Double_sentinel_list<Type>::push_front(Type const &obj) {
 template <typename Type>
 void Double_sentinel_list<Type>::push_back(Type const &obj) {
   // Same logic as push_front just reversed
-  Double_node* previous_tail = rend();
+  Double_node* previous_tail = rbegin();
   Double_node* new_node      = new Double_node(obj, previous_tail, list_tail);
 
   end()->previous_node     = new_node;
@@ -266,7 +266,7 @@ void Double_sentinel_list<Type>::pop_front() {
     return;
   }
   
-  erase_link(rbegin());
+  erase_link(begin());
 }
 
 // If list is empty this function will do nothing
@@ -276,7 +276,7 @@ void Double_sentinel_list<Type>::pop_back() {
     return;
   }
 
-  erase_link(rend());
+  erase_link(rbegin());
 }
 
 template <typename Type>
@@ -285,7 +285,7 @@ int Double_sentinel_list<Type>::erase(Type const &obj) {
   // Create two since we have to delete the nodes we are removing.
   // Next is basically a temp variable so we can delete without losing the current
   // objects next pointer
-  Double_node* current = rbegin();
+  Double_node* current = begin();
   Double_node* next    = current;
   while (current != list_tail) {
     next = current->next();
@@ -347,7 +347,7 @@ template <typename T>
 std::ostream &operator<<(std::ostream &out, Double_sentinel_list<T> const &list) {
   out << "head->";
 
-	for (typename Double_sentinel_list<T>::Double_node *ptr = list.rbegin(); ptr != list.end(); ptr = ptr->next()) {
+	for (typename Double_sentinel_list<T>::Double_node *ptr = list.begin(); ptr != list.end(); ptr = ptr->next()) {
     out << ptr->value() << "->";
   }
 
