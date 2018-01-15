@@ -5,7 +5,8 @@ SOURCES += Exception.h
 SOURCES += Double_sentinel_list_tester.h
 SOURCES += Tester.h
 SOURCES += ece250.h
-SOURCES += Double_sentinel_list_driver.cpp
+SOURCES += Move_and_copy_tests.cpp
+#SOURCES += Double_sentinel_list_driver.cpp
 #SOURCES += tb.cpp
 
 CFLAGS := -DDEBUG_PRINT
