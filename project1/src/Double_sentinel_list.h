@@ -136,17 +136,26 @@ Double_sentinel_list<Type>::~Double_sentinel_list() {
   delete list_tail;
 }
 
+/*
+ * @returns @int the size of the linked list not including sentinels
+ */
 template <typename Type>
 int Double_sentinel_list<Type>::size() const {
 	return list_size;
 }
 
+/*
+ * @returns @bool if the array is empty
+ */
 template <typename Type>
 bool Double_sentinel_list<Type>::empty() const {
   // Could either check to see if list_size is zero or if list_head->next == list_tail 
 	return list_size == 0;
 }
 
+/*
+ * @returns @Type value at the first node
+ */
 template <typename Type>
 Type Double_sentinel_list<Type>::front() const {
   if (empty()) {
@@ -156,6 +165,9 @@ Type Double_sentinel_list<Type>::front() const {
 	return begin()->value();
 }
 
+/*
+ * @returns @Type value at the last node
+ */
 template <typename Type>
 Type Double_sentinel_list<Type>::back() const {
   if (empty()) {
@@ -185,6 +197,9 @@ typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::re
 	return list_head;
 }
 
+/*
+ * @returns @int location of node with @obj as its value
+ */
 template <typename Type>
 typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::find(Type const &obj) const {
   Double_node* current = begin();
@@ -198,6 +213,9 @@ typename Double_sentinel_list<Type>::Double_node *Double_sentinel_list<Type>::fi
 	return nullptr;
 }
 
+/*
+ * @returns @int number of nodes with @obj as its value
+ */
 template <typename Type>
 int Double_sentinel_list<Type>::count(Type const &obj) const {
   int num = 0;
@@ -236,7 +254,6 @@ Double_sentinel_list<Type> &Double_sentinel_list<Type>::operator=(Double_sentine
 template <typename Type>
 void Double_sentinel_list<Type>::push_front(Type const &obj) {
   // This should work even if list is empty as previous_head will be the tail sentinel
-  // TODO rename these to something better such as previous_rbegin
   Double_node* previous_head = begin();
   Double_node* new_node      = new Double_node(obj, list_head, previous_head);
 
