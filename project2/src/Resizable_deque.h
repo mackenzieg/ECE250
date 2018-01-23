@@ -76,18 +76,24 @@ Resizable_deque<Type>::Resizable_deque(int n)
 
 // Copy Constructor
 template <typename Type>
-Resizable_deque<Type>::Resizable_deque(Resizable_deque const &deque)
-// Your initalization list
+Resizable_deque<Type>::Resizable_deque(Resizable_deque const &deque) :
+  init_aloc(deque.init_aloc),
+  allocated(deque.allocated),
+  read_index(0),
+  write_index(0),
+  fifo(new Type[allocated])
 {
-	// Enter your implementation here
+  for (int i = deque.read_index; i != deque.write_index; i = (i + 1) % allocated) {
+    fifo[write_index++] = deque.fifo[i];
+  }
 }
 
 // Move Constructor
 template <typename Type>
-Resizable_deque<Type>::Resizable_deque(Resizable_deque &&deque)
-// Your initalization list
+Resizable_deque<Type>::Resizable_deque(Resizable_deque &&deque) :
+  Resizable_deque(1)
 {
-	// Enter your implementation here
+  swap(deque);
 }
 
 // Destructor
@@ -137,8 +143,15 @@ Type Resizable_deque<Type>::back() const {
 }
 
 template <typename Type>
-void Resizable_deque<Type>::swap(Resizable_deque<Type> &deque) {
+void Resizable_deque<Type>::swap(Resizable_deque<Type> &deque)
+{
+  std::swap(init_aloc, deque.init_aloc);
+  std::swap(allocated, deque.allocated);
 
+  std::swap(read_index, deque.read_index);
+  std::swap(write_index, deque.write_index);
+
+  std::swap(fifo, deque.fifo);
 }
 
 template <typename Type>
@@ -171,6 +184,7 @@ void Resizable_deque<Type>::push_front( Type const &obj ) {
   check_resize(); 
 }
 
+
 template <typename Type>
 void Resizable_deque<Type>::push_back( Type const &obj ) {
   fifo[write_index] = obj;
@@ -191,11 +205,13 @@ void Resizable_deque<Type>::pop_front() {
   check_resize();
 }
 
+
 template <typename Type>
 void Resizable_deque<Type>::pop_back() {
   if (empty()) {
     throw underflow();
   }
+
 
   if (write_index == 0) {
     write_index = allocated - 1;
@@ -224,16 +240,12 @@ void Resizable_deque<Type>::clear() {
 
 template <typename Type>
 void Resizable_deque<Type>::check_resize() {
-  if (size() > (allocated / 4) && size() < (allocated / 2)) {
-    return;
-  }
-
   int new_allocated;
 
   if (size() >= (allocated / 2)) {
     // Need to make array larger
     new_allocated = allocated * 2;
-  } else {
+  } else if(size() <= (allocated / 4) && allocated != init_aloc) {
     // Need to make array smaller
     new_allocated = allocated / 4;
 
@@ -242,6 +254,8 @@ void Resizable_deque<Type>::check_resize() {
     if (new_allocated < init_aloc) {
       new_allocated = init_aloc;
     }
+  } else {
+    return;
   }
 
   Type* new_fifo = new Type[new_allocated]; 
@@ -282,11 +296,15 @@ template <typename T>
 std::ostream &operator<<(std::ostream &out, Resizable_deque<T> const &list) {
 
   out << "[";
-  for (int i = list.read_index; i != list.write_index; (i + 1) % list.allocated) {
+  for (int i = list.read_index; i != list.write_index; i = (i + 1) % list.allocated) {
     out << list.fifo[i] << ",";
   }
 
-  out << std::endl;
+  out << "]" << std::endl;
+
+  out << "r/w index: " << list.read_index << " / " << list.write_index << std::endl;
+
+  out << "Allocated: " << list.allocated << std::endl;
 
 	return out;
 }
