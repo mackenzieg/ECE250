@@ -156,7 +156,6 @@ void Resizable_deque<Type>::swap(Resizable_deque<Type> &deque)
 
 template <typename Type>
 Resizable_deque<Type> &Resizable_deque<Type>::operator=( Resizable_deque<Type> const &rhs ) {
-	// This is done for you...
 	Resizable_deque<Type> copy( rhs );
 	swap( copy );
 
@@ -165,7 +164,6 @@ Resizable_deque<Type> &Resizable_deque<Type>::operator=( Resizable_deque<Type> c
 
 template <typename Type>
 Resizable_deque<Type> &Resizable_deque<Type>::operator=( Resizable_deque<Type> &&rhs ) {
-	// This is done for you...
 	swap( rhs );
 
 	return *this;
@@ -211,7 +209,6 @@ void Resizable_deque<Type>::pop_back() {
   if (empty()) {
     throw underflow();
   }
-
 
   if (write_index == 0) {
     write_index = allocated - 1;
@@ -264,11 +261,7 @@ void Resizable_deque<Type>::check_resize() {
 
   int new_index  = 0;
 
-  while (true) {
-    if (curr_index == write_index) {
-      break;
-    }
-
+  while (curr_index != write_index) {
     new_fifo[new_index++] = fifo[curr_index];
     
     curr_index = (curr_index + 1) % allocated;
