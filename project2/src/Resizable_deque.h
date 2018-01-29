@@ -139,7 +139,7 @@ Type Resizable_deque<Type>::back() const {
     throw underflow();
   }
   // Have to subtract one to bring us to the read space end
-	return fifo[write_index - 1];
+	return fifo[write_index == 0 ? (allocated - 1) : write_index - 1];
 }
 
 template <typename Type>
