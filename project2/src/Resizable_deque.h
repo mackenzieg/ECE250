@@ -112,7 +112,7 @@ int Resizable_deque<Type>::size() const {
     return (write_index) + (allocated - read_index);
   }
 
-	return write_index - read_index;
+	return (write_index - read_index);
 }
 
 template <typename Type>
@@ -122,10 +122,10 @@ int Resizable_deque<Type>::capacity() const {
 
 template <typename Type>
 bool Resizable_deque<Type>::empty() const {
-	return read_index == write_index;
+	return (read_index == write_index);
 }
 
-template <typename  Type>
+template <typename Type>
 Type Resizable_deque<Type>::front() const {
   if (empty) {
     throw underflow();
@@ -133,7 +133,7 @@ Type Resizable_deque<Type>::front() const {
 	return fifo[read_index];
 }
 
-template <typename  Type>
+template <typename Type>
 Type Resizable_deque<Type>::back() const {
   if (empty) {
     throw underflow();

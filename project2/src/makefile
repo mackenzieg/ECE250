@@ -6,6 +6,7 @@ SOURCES += Resizable_deque_tester.h
 SOURCES += Tester.h
 SOURCES += ece250.h
 SOURCES += main.cpp
+#SOURCES += Resizable_deque_driver.cpp
 
 CFLAGS := -DDEBUG_PRINT
 CFLAGS += -g
