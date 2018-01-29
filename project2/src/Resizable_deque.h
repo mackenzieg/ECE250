@@ -127,7 +127,7 @@ bool Resizable_deque<Type>::empty() const {
 
 template <typename Type>
 Type Resizable_deque<Type>::front() const {
-  if (empty) {
+  if (empty()) {
     throw underflow();
   }
 	return fifo[read_index];
@@ -135,7 +135,7 @@ Type Resizable_deque<Type>::front() const {
 
 template <typename Type>
 Type Resizable_deque<Type>::back() const {
-  if (empty) {
+  if (empty()) {
     throw underflow();
   }
   // Have to subtract one to bring us to the read space end
@@ -270,7 +270,6 @@ void Resizable_deque<Type>::check_resize() {
     }
 
     new_fifo[new_index++] = fifo[curr_index];
-
     
     curr_index = (curr_index + 1) % allocated;
   }
@@ -283,8 +282,6 @@ void Resizable_deque<Type>::check_resize() {
   read_index = 0;
   write_index = new_index;
 }
-
-
 
 /////////////////////////////////////////////////////////////////////////
 //                               Friends                               //
