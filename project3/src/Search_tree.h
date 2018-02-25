@@ -334,14 +334,20 @@ template <typename Type>
 bool Search_tree<Type>::Node::insert( Type const &obj, Search_tree<Type>::Node *&to_this ) {
 	if ( obj < node_value ) {
 		if ( left_tree == nullptr ) {
+      // Create new left tree node for obj
 			left_tree = new Search_tree<Type>::Node( obj );
 
+      // Save previous node for linking
       Node* prev_prev = to_this->previous_node;
 
+      // link previous next mode to new tree
       prev_prev->next_node = left_tree;
+      // link tree back to previous node
       left_tree->previous_node = prev_prev;
 
+      // link tree to next node
       left_tree->next_node = to_this;
+      // link next node back to tree
       to_this->previous_node = left_tree;
 
       left_tree->update_height();
@@ -351,20 +357,23 @@ bool Search_tree<Type>::Node::insert( Type const &obj, Search_tree<Type>::Node *
 			return true;
 		} else {
 			if ( left_tree->insert( obj, left_tree ) ) {
+        // Imbalance on left side
         if ((right_tree == nullptr) || (left_tree->height() - right_tree->height() == 2)) {
           Node* f = this;
           Node* b = this->left_tree;
-          // left-left
+          // left-left balance
           if (left_tree->left_tree->height() > left_tree->right_tree->height()) {
             to_this = b;
             Node* old_right = b->right_tree;
+            // Logic to rotate nodes
             b->right_tree = f;
             f->left_tree  = old_right;
 
+            // Update heights after
             f->update_height();
             b->update_height();
 
-          // left-right
+          // left-right balance
           } else {
             Node* d = b->right_tree;
 
@@ -379,6 +388,7 @@ bool Search_tree<Type>::Node::insert( Type const &obj, Search_tree<Type>::Node *
 
             to_this = d;
 
+            // Update heights after
             f->update_height();
             b->update_height();
             d->update_height();
@@ -444,6 +454,7 @@ bool Search_tree<Type>::Node::insert( Type const &obj, Search_tree<Type>::Node *
         }
 
 				update_height();
+
 				return true;
 			} else {
 				return false;
@@ -467,7 +478,6 @@ bool Search_tree<Type>::Node::erase( Type const &obj, Search_tree<Type>::Node *&
           Node* b = this->right_tree;
           // right-right 
           if (right_tree->right_tree->height() > right_tree->left_tree->height()) {
-            std::cout << "right-right" << std::endl;
             to_this = b;
             Node* old_left = b->left_tree;
             b->left_tree = f;
@@ -478,7 +488,6 @@ bool Search_tree<Type>::Node::erase( Type const &obj, Search_tree<Type>::Node *&
 
           // right-left
           } else {
-            std::cout << "right-left" << std::endl;
             Node* d = b->left_tree;
 
             Node* dr = d->left_tree;
@@ -514,7 +523,6 @@ bool Search_tree<Type>::Node::erase( Type const &obj, Search_tree<Type>::Node *&
           Node* b = this->left_tree;
           // left-left
           if (left_tree->left_tree->height() > left_tree->right_tree->height()) {
-            std::cout << "left-left" << std::endl;
             to_this = b;
             Node* old_right = b->right_tree;
             b->right_tree = f;
@@ -525,7 +533,6 @@ bool Search_tree<Type>::Node::erase( Type const &obj, Search_tree<Type>::Node *&
 
           // left-right
           } else {
-            std::cout << "left-right" << std::endl;
             Node* d = b->right_tree;
 
             Node* dr = d->right_tree;
@@ -556,6 +563,7 @@ bool Search_tree<Type>::Node::erase( Type const &obj, Search_tree<Type>::Node *&
 
 
 		if ( is_leaf() ) {
+
 			to_this = nullptr;
 
       previous_node->next_node = next_node;
@@ -579,6 +587,72 @@ bool Search_tree<Type>::Node::erase( Type const &obj, Search_tree<Type>::Node *&
 			node_value = right_tree->front()->node_value;
 			right_tree->erase( node_value, right_tree );
 			update_height();
+
+      if ((right_tree == nullptr) || (left_tree->height() - right_tree->height() == 2)) {
+        Node* f = this;
+        Node* b = this->left_tree;
+        // left-left
+        if (left_tree->left_tree->height() > left_tree->right_tree->height()) {
+          to_this = b;
+          Node* old_right = b->right_tree;
+          b->right_tree = f;
+          f->left_tree  = old_right;
+
+          f->update_height();
+          b->update_height();
+
+        // left-right
+        } else {
+          Node* d = b->right_tree;
+
+          Node* dr = d->right_tree;
+          Node* dl = d->left_tree;
+
+          d->left_tree = b;
+          d->right_tree = f;
+
+          b->right_tree = dl;
+          f->left_tree  = dr;
+
+          to_this = d;
+
+          f->update_height();
+          b->update_height();
+          d->update_height();
+        }
+      } else if ((left_tree == nullptr) || (right_tree->height() - left_tree->height() == 2)) {
+          Node* f = this;
+          Node* b = this->right_tree;
+          // right-right 
+          if (right_tree->right_tree->height() > right_tree->left_tree->height()) {
+            to_this = b;
+            Node* old_left = b->left_tree;
+            b->left_tree = f;
+            f->right_tree  = old_left;
+
+            f->update_height();
+            b->update_height();
+
+          // right-left
+          } else {
+            Node* d = b->left_tree;
+
+            Node* dr = d->left_tree;
+            Node* dl = d->right_tree;
+
+            d->right_tree = b;
+            d->left_tree = f;
+
+            b->left_tree = dl;
+            f->right_tree  = dr;
+
+            to_this = d;
+
+            f->update_height();
+            b->update_height();
+            d->update_height();
+          }
+        }
 		}
 
 		return true;
