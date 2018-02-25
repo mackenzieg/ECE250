@@ -1,6 +1,8 @@
 #include <iostream>
 #include "Search_tree.h"
 
+using namespace std;
+
 int main() {
 	Search_tree<int> tree;
 
@@ -8,51 +10,48 @@ int main() {
 
   std::cout << tree << std::endl;
 
-	for ( int i = 1; i <= 30; ++i ) {
-    tree.insert(((83 * i) % 30));
-    std::cout << "Inserted: " << ((83 * i) % 30) << std::endl;
+  tree.insert(10);
+  tree.insert(20);
+  tree.insert(5);
+  tree.insert(2);
+  tree.insert(6);
 
-    std::cout << tree << std::endl;
-	}
+  cout << tree << endl;
 
-	std::cout << std::endl;
+  tree.erase(10);
 
-	for ( int i = 1; i <= 30; ++i ) {
-		std::cout << tree.insert( (97*i) % 30 );
-	}
+  cout << tree << endl;
 
-	std::cout << std::endl;
+	// for ( int i = 1; i <= 30; ++i ) {
+  //   tree.insert(((83 * i) % 30));
+	// }
 
-	std::cout << "Front:   " << tree.front()   << std::endl;
-	std::cout << "Back:    " << tree.back()    << std::endl;
-	std::cout << "Height:  " << tree.height()  << " <- this will change for an AVL tree" << std::endl;
 
-	std::cout << "--> ";
+	// std::cout << "Front:   " << tree.front()   << std::endl;
+	// std::cout << "Back:    " << tree.back()    << std::endl;
+	// std::cout << "Height:  " << tree.height()  << " <- this will change for an AVL tree" << std::endl;
 
-	for ( Search_tree<int>::Iterator itr = tree.begin(); itr != tree.end(); ++itr ) {
-		std::cout << *itr << " ";
-	}
+	// std::cout << "--> ";
 
-	std::cout << std::endl;
+	// for ( Search_tree<int>::Iterator itr = tree.begin(); itr != tree.end(); ++itr ) {
+	// 	std::cout << *itr << " ";
+	// }
 
-	std::cout << "--> ";
+	// std::cout << std::endl;
 
-	for ( Search_tree<int>::Iterator itr = tree.rbegin(); itr != tree.rend(); --itr ) {
-		std::cout << *itr << " ";
-	}
+	// std::cout << "--> ";
 
-	std::cout << std::endl;
+	// for ( Search_tree<int>::Iterator itr = tree.rbegin(); itr != tree.rend(); --itr ) {
+	// 	std::cout << *itr << " ";
+	// }
 
-	tree.clear();
+	// std::cout << std::endl;
 
-	std::cout << "--> ";
-	
+  // std::cout << tree << std::endl;
 
-	for ( Search_tree<int>::Iterator itr = tree.begin(); itr != tree.end(); ++itr ) {
-		std::cout << *itr << " ";
-	}
+  // tree.erase(16);
 
-	std::cout << std::endl;
+  // std::cout << tree << std::endl;
 
 	return 0;
 }
