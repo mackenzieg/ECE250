@@ -150,11 +150,18 @@ template <typename Type>
 bool Quadratic_hash_table<Type>::erase(const Type& obj) {
   int index = hash(obj);
 
+  // Hash didn't find valye at location
   if (array[index] != obj) {
     return false;
   }
 
+  // Value has already been erased
+  if (occupied[index] != OCCUPIED) {
+    return false;
+  }
+
   occupied[index] = ERASED;
+  return true;
 }
 
 template <typename Type>
