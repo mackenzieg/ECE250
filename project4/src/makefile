@@ -1,13 +1,11 @@
-PROJ := ll
+PROJ := qht
 
-SOURCES := Double_sentinel_list.h
+SOURCES := Quadratic_hash_table.h
 SOURCES += Exception.h
-SOURCES += Double_sentinel_list_tester.h
 SOURCES += Tester.h
 SOURCES += ece250.h
-SOURCES += Move_and_copy_tests.cpp
-#SOURCES += Double_sentinel_list_driver.cpp
-#SOURCES += tb.cpp
+SOURCES += Quadratic_hash_table_driver.cpp
+SOURCES += Quadratic_hash_table_tester.h
 
 CFLAGS := -DDEBUG_PRINT
 CFLAGS += -g
@@ -19,4 +17,4 @@ $(PROJ):
 
 # for some reason rm -f $(PROJ) so make it the same as PROJ for now
 clean:
-	rm -f ll
+	rm -f qht
