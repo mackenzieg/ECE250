@@ -88,28 +88,19 @@ Quadratic_hash_table<Type>::~Quadratic_hash_table() {
   delete[] occupied;
 }
 
-/*
- * Returns vals:
- *      -2: object already inside array
- *      -1: array is full
- *       0: hash was successful
- */
+// This function will not check to see if 
 template <typename Type>
-int Quadratic_hash_table<Type>::hash(const Type$ obj, int& val) const {
+int Quadratic_hash_table<Type>::hash(const Type$ obj) const {
   int hash = static_cast<int>(obj);
   for (int i = 0; i < table_size; ++i) {
     val = (hash + i*i) % (table_size - 1);
 
-    if (array[val] == obj) {
-      return -2;
-    }
-
-    if (occupied[val] != OCCUPIED) {
-      return 0;
+    if (occupied[val] != OCCUPIED || array[val] == obj) {
+      return val;
     }
   }
-
-  return -1;
+  
+  throw overflow();
 }
 
 template <typename Type>
@@ -146,14 +137,9 @@ template <typename Type>
 void Quadratic_hash_table<Type>::insert(const Type& obj) {
   int index = hash(obj);
 
-  // Object is already inside the table
-  if (index == -2) {
+  // Can't use member since we need the index for later
+  if (array[index] == obj) {
     return;
-  }
-
-  // No more space is left in the table
-  if (index == -1) {
-    throw overflow();
   }
 
   array   [index] = obj;
@@ -164,10 +150,11 @@ template <typename Type>
 bool Quadratic_hash_table<Type>::erase(const Type& obj) {
   int index = hash(obj);
 
-  // Object was not found in array
-  if (index == -1) {
-
+  if (array[index] != obj) {
+    return false;
   }
+
+  occupied[index] = ERASED;
 }
 
 template <typename Type>
