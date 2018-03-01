@@ -93,7 +93,7 @@ template <typename Type>
 int Quadratic_hash_table<Type>::hash(const Type& obj) const {
   int hash = static_cast<int>(obj);
   for (int i = 0; i < array_size; ++i) {
-    int val = (hash + i*i) % (array_size - 1);
+    int val = (hash + i*i) % (array_size);
 
     if (occupied[val] != OCCUPIED || array[val] == obj) {
       return val;
@@ -142,12 +142,18 @@ void Quadratic_hash_table<Type>::insert(const Type& obj) {
     return;
   }
 
+  ++count;
+
   array   [index] = obj;
   occupied[index] = OCCUPIED;
 }
 
 template <typename Type>
 bool Quadratic_hash_table<Type>::erase(const Type& obj) {
+  if (empty()) {
+    throw underflow();
+  }
+
   int index = hash(obj);
 
   // Hash didn't find valye at location
@@ -159,6 +165,8 @@ bool Quadratic_hash_table<Type>::erase(const Type& obj) {
   if (occupied[index] != OCCUPIED) {
     return false;
   }
+
+  --count;
 
   occupied[index] = ERASED;
   return true;

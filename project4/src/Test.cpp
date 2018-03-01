@@ -8,7 +8,7 @@ int main() {
 
   table.insert(31);
 
-  cout << "Bin 0: " << table.bin(0) << endl;
+  cout << "Bin 31: " << table.bin(31) << endl;
 
   cout << table.erase(31) << endl;
   cout << table.erase(31) << endl;
