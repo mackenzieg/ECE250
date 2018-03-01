@@ -151,7 +151,7 @@ void Quadratic_hash_table<Type>::insert(const Type& obj) {
 template <typename Type>
 bool Quadratic_hash_table<Type>::erase(const Type& obj) {
   if (empty()) {
-    throw underflow();
+    return false;
   }
 
   int index = hash(obj);

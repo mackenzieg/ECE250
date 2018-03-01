@@ -10,6 +10,8 @@ int main() {
 
   cout << "Bin 31: " << table.bin(31) << endl;
 
+  cout << table << endl;
+
   cout << table.erase(31) << endl;
   cout << table.erase(31) << endl;
 }
