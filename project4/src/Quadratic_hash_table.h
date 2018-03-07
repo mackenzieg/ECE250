@@ -72,11 +72,20 @@ class Quadratic_hash_table {
 
 template <typename Type>
 Quadratic_hash_table<Type>::Quadratic_hash_table( int m ):
-count( 0 ), power( m ),
-array_size( 1 << power ),
-mask( array_size - 1 ),
-array( new Type[array_size] ),
-occupied( new bin_state_t[array_size] ) {
+count( 0 ) {
+
+  if (m < 0) {
+    m = 5;
+  }
+
+  power = m;
+  array_size = (1 << power);
+
+  array = new Type[array_size];
+  occupied = new bin_state_t[array_size];
+
+  mask = array_size - 1;
+
 	for ( int i = 0; i < array_size; ++i ) {
     // Initialize everything to unoccupied
 		occupied[i] = UNOCCUPIED;

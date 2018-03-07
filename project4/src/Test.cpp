@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-  Quadratic_hash_table<int> table(5);
+  Quadratic_hash_table<int> table(-11);
 
   table.insert(-120);
 
