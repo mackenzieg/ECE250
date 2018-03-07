@@ -78,6 +78,7 @@ mask( array_size - 1 ),
 array( new Type[array_size] ),
 occupied( new bin_state_t[array_size] ) {
 	for ( int i = 0; i < array_size; ++i ) {
+    // Initialize everything to unoccupied
 		occupied[i] = UNOCCUPIED;
 	}
 }
@@ -92,6 +93,13 @@ Quadratic_hash_table<Type>::~Quadratic_hash_table() {
 template <typename Type>
 int Quadratic_hash_table<Type>::hash(const Type& obj) const {
   int hash = static_cast<int>(obj);
+
+  if (hash < 0) {
+    // If static cast gives us a negative number we need to modular and add capacity
+    // to get a value within the range of the array
+    hash = (hash % array_size) + capacity();
+  }
+
   for (int i = 0; i < array_size; ++i) {
     int val = (hash + i*i) % (array_size);
 
@@ -125,6 +133,7 @@ bool Quadratic_hash_table<Type>::empty() const {
 
 template <typename Type>
 bool Quadratic_hash_table<Type>::member(const Type& obj) const {
+  // Check to see if object at hash location is occupied
   return occupied[hash(obj)] == OCCUPIED;
 }
 
@@ -175,6 +184,7 @@ bool Quadratic_hash_table<Type>::erase(const Type& obj) {
 template <typename Type>
 void Quadratic_hash_table<Type>::clear() {
   count = 0;
+  // Treat everything as empty
 	for (int i = 0; i < array_size; ++i) {
 		occupied[i] = UNOCCUPIED;
 	}
