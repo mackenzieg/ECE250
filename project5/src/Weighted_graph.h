@@ -4,11 +4,11 @@
  *  - Select the current calendar term and enter the year
  *  - List students with whom you had discussions and who helped you
  *
- * uWaterloo User ID:  uwuserid @uwaterloo.ca
+ * uWaterloo User ID:  mj2goodw @uwaterloo.ca
  * Submitted for ECE 250
  * Department of Electrical and Computer Engineering
  * University of Waterloo
- * Calender Term of Submission:  (Winter|Spring|Fall) 201N
+ * Calender Term of Submission:  Winter 2018
  *
  * By submitting this file, I affirm that
  * I am the author of all modifications to
@@ -33,12 +33,34 @@
 #include <iostream>
 #include <limits>
 
-// include whatever classes you want
+#include "Quadratic_hash_table.h"
 
 class Weighted_graph {
 	private:
 		// your implementation here
 		//  you can add both private member variables and private member functions
+    
+    class Node {
+      private:
+        int val;
+        int num_connections
+        Quadratic_hash_table connections;
+
+      public:
+        Node(int val, int num_nodes);
+        ~Node();
+
+        void add_connection(int other);
+        void del_connection(int other);
+
+        int num_connections();
+
+        bool connected(int val);
+
+        int value();
+    }
+
+    private Node** nodes;
 
 		static const double INF;
 
@@ -57,6 +79,50 @@ class Weighted_graph {
 
 	friend std::ostream &operator<<( std::ostream &, Weighted_graph const & );
 };
+
+Weighted_graph::Weighted_graph(int x) {
+  if (x <= 0) {
+    x = 1;
+  }
+
+  for (int i = 0; i < x; ++i) {
+    nodes[i] = new Node(i, x); 
+  }
+}
+
+Weighted_graph::Node::Node(int val, int num_nodes) :
+  val(val), num_connections(0) {
+
+  int power = (int) ceil(log2(num_nodes));
+
+  connections = connections(power);
+}
+
+Weighted_graph::Node::~Node() {}
+
+void Weighted_graph::Node::add_connection(int other) {
+  ++num_connections;
+
+  connections.insert(other);
+}
+
+void Weighted_graph::Node::del_connection(int other) {
+  --num_connections;
+
+  connections.erase(other);
+}
+
+int Weighted_graph::Node::num_connections() {
+  return num_connections;
+}
+
+bool Weighted_graph::Node::connected(int val) {
+  return connections.member(val);
+}
+
+int Weighted_graph::Node::connected() {
+  return val;
+}
 
 const double Weighted_graph::INF = std::numeric_limits<double>::infinity();
 
