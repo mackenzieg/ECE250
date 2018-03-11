@@ -39,9 +39,9 @@ template <typename Type>
 class Quadratic_hash_table {
 	private:
 		int count;
+    int erase_count;
 		int power;
 		int array_size;
-		int mask;
 		Type *array;
 		bin_state_t *occupied;
 
@@ -72,7 +72,8 @@ class Quadratic_hash_table {
 
 template <typename Type>
 Quadratic_hash_table<Type>::Quadratic_hash_table( int m ):
-count( 0 ) {
+count( 0 ),
+erase_count(0) {
 
   if (m < 0) {
     m = 5;
@@ -83,8 +84,6 @@ count( 0 ) {
 
   array = new Type[array_size];
   occupied = new bin_state_t[array_size];
-
-  mask = array_size - 1;
 
 	for ( int i = 0; i < array_size; ++i ) {
     // Initialize everything to unoccupied
@@ -132,7 +131,7 @@ int Quadratic_hash_table<Type>::capacity() const {
 
 template <typename Type>
 double Quadratic_hash_table<Type>::load_factor() const {
-  return (double) (size() / capacity());
+  return (((double) (size() + erase_count)) / (double) capacity());
 }
 
 template <typename Type>
@@ -158,6 +157,10 @@ void Quadratic_hash_table<Type>::insert(const Type& obj) {
   // Can't use member since we need the index for later
   if (array[index] == obj) {
     return;
+  }
+
+  if (occupied[index] == ERASED) {
+    --erase_count;
   }
 
   ++count;
@@ -187,12 +190,15 @@ bool Quadratic_hash_table<Type>::erase(const Type& obj) {
   --count;
 
   occupied[index] = ERASED;
+
+  ++erase_count;
   return true;
 }
 
 template <typename Type>
 void Quadratic_hash_table<Type>::clear() {
   count = 0;
+  erase_count = 0;
   // Treat everything as empty
 	for (int i = 0; i < array_size; ++i) {
 		occupied[i] = UNOCCUPIED;

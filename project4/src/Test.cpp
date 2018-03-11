@@ -8,7 +8,11 @@ int main() {
 
   table.insert(-120);
 
-  cout << "Bin 31: " << table.bin(31) << endl;
-
   cout << table << endl;
+
+  cout << table.load_factor() << endl;
+
+  table.erase(-120);
+
+  cout << table.load_factor() << endl;
 }

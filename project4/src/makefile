@@ -2,7 +2,7 @@ PROJ := qht
 
 SOURCES := Quadratic_hash_table.h
 SOURCES += Exception.h
-#SOURCES += Tester.h
+SOURCES += Tester.h
 #SOURCES += ece250.h
 #SOURCES += Quadratic_hash_table_driver.cpp
 #SOURCES += Quadratic_hash_table_tester.h
