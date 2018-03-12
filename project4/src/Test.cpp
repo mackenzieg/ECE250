@@ -12,6 +12,10 @@ int main() {
 
   cout << table.load_factor() << endl;
 
+  Quadratic_hash_table<int> another_table(table);
+
+  cout << another_table << endl;
+
   table.erase(-120);
 
   cout << table.load_factor() << endl;

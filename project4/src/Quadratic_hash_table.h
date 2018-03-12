@@ -49,6 +49,7 @@ class Quadratic_hash_table {
 
 	public:
 		Quadratic_hash_table( int = 5 );
+		Quadratic_hash_table(const Quadratic_hash_table<Type> &);
 		~Quadratic_hash_table();
 
 		int size() const;
@@ -91,10 +92,29 @@ erase_count(0) {
 	}
 }
 
+
+template <typename Type>
+Quadratic_hash_table<Type>::Quadratic_hash_table(const Quadratic_hash_table<Type>& other) :
+count(other.count),
+erase_count(other.erase_count),
+power(other.power),
+array_size(other.array_size) {
+  array = new Type[array_size];
+  occupied = new bin_state_t[array_size];
+  for (int i = 0; i < array_size; ++i) {
+    array[i] = other.array[i];
+    occupied[i] = other.occupied[i];
+  }
+}
+
 template <typename Type>
 Quadratic_hash_table<Type>::~Quadratic_hash_table() {
-  delete[] array;
-  delete[] occupied;
+  if (array != nullptr) {
+    delete[] array;
+  }
+  if (occupied != nullptr) {
+    delete[] occupied;
+  }
 }
 
 // This function will not check to see if 
