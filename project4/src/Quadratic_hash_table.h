@@ -76,11 +76,13 @@ Quadratic_hash_table<Type>::Quadratic_hash_table( int m ):
 count( 0 ),
 erase_count(0) {
 
+  // If argument is negative set to 5
   if (m < 0) {
     m = 5;
   }
 
   power = m;
+  // shift 1 over for powers of two
   array_size = (1 << power);
 
   array = new Type[array_size];
@@ -101,6 +103,7 @@ power(other.power),
 array_size(other.array_size) {
   array = new Type[array_size];
   occupied = new bin_state_t[array_size];
+  // Copy over other array
   for (int i = 0; i < array_size; ++i) {
     array[i] = other.array[i];
     occupied[i] = other.occupied[i];
@@ -109,6 +112,7 @@ array_size(other.array_size) {
 
 template <typename Type>
 Quadratic_hash_table<Type>::~Quadratic_hash_table() {
+  // These checks dont need to be done
   if (array != nullptr) {
     delete[] array;
   }
@@ -129,8 +133,10 @@ int Quadratic_hash_table<Type>::hash(const Type& obj) const {
   }
 
   for (int i = 0; i < array_size; ++i) {
+    // Add on quadratic value and modulo with array size for rapping
     int val = (hash + i*i) % (array_size);
 
+    // If object is already in hash location or space is already occupied
     if (occupied[val] != OCCUPIED || array[val] == obj) {
       return val;
     }
@@ -179,6 +185,7 @@ void Quadratic_hash_table<Type>::insert(const Type& obj) {
     return;
   }
 
+  // Decrease erase_count if we insert into a space that was previously ERASED
   if (occupied[index] == ERASED) {
     --erase_count;
   }
