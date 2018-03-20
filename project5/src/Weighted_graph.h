@@ -120,6 +120,12 @@ double Weighted_graph::distance(int a, int b) {
 }
 
 void Weighted_graph::insert(int base, int other, double distance) {
+  if (w <= 0.0 || w == INF 
+               || base == others
+               || (base >= size)
+               || (other >= size)) {
+    throw illegal_argument();
+  }
 
 }
 
