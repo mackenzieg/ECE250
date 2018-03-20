@@ -32,96 +32,109 @@
 
 #include <iostream>
 #include <limits>
-
-#include "Quadratic_hash_table.h"
+#include "Exception.h"
 
 class Weighted_graph {
 	private:
-		// your implementation here
-		//  you can add both private member variables and private member functions
+    static const double INFINITY;
     
-    class Node {
-      private:
-        int val;
-        int num_connections
-        Quadratic_hash_table connections;
+    double **graph;
+    int     *degree;
 
-      public:
-        Node(int val, int num_nodes);
-        ~Node();
-
-        void add_connection(int other);
-        void del_connection(int other);
-
-        int num_connections();
-
-        bool connected(int val);
-
-        int value();
-    }
-
-    private Node** nodes;
-
+    int size;
+    int edges;
+    
 		static const double INF;
 
 	public:
 		Weighted_graph( int = 50 );
 		~Weighted_graph();
 
-		int degree( int ) const;
+		int degree(int) const;
 		int edge_count() const;
-		double adjacent( int, int ) const;
-		double distance( int, int );
+		double adjacent(int, int) const;
+		double distance(int, int);
 
-		void insert( int, int, double );
+		void insert(int, int, double);
+
+    void destroy();
 
 	// Friends
 
 	friend std::ostream &operator<<( std::ostream &, Weighted_graph const & );
 };
 
-Weighted_graph::Weighted_graph(int x) {
+const double Weighted_graph::INFINITY = std::numeric_milits<double>::infinity();
+
+Weighted_graph::Weighted_graph(int x) :
+size(x),
+edges(0) {
+
   if (x <= 0) {
-    x = 1;
+    throw illegal_argument();
   }
 
   for (int i = 0; i < x; ++i) {
-    nodes[i] = new Node(i, x); 
+    graph[i] = new double[x];
+  }
+
+  for (int m = 0; m < x; ++m) {
+    for (int n = 0; n < x; ++n) {
+      graph[m][n] = INFINITY;
+    }
+  }
+
+  degree = new int[x];
+
+  for (int i = 0; i < x; ++i) {
+    degree[i] = 0;
   }
 }
 
-Weighted_graph::Node::Node(int val, int num_nodes) :
-  val(val), num_connections(0) {
+Weighted_graph::~Weighted_graph() {
+  for (int i = 0; i < size; ++i) {
+    delete[] graph[i];
+  }
 
-  int power = (int) ceil(log2(num_nodes));
-
-  connections = connections(power);
+  delete[] degree;
 }
 
-Weighted_graph::Node::~Node() {}
-
-void Weighted_graph::Node::add_connection(int other) {
-  ++num_connections;
-
-  connections.insert(other);
+int Weighted_graph::degree(int node) const {
+  return degree[node];
 }
 
-void Weighted_graph::Node::del_connection(int other) {
-  --num_connections;
-
-  connections.erase(other);
+int Weighted_graph::edge_count() const {
+  return edges;
 }
 
-int Weighted_graph::Node::num_connections() {
-  return num_connections;
+double Weighted_graph::adjacent(int a, int b) const {
+  if (a == b) {
+    return 0;
+  }
+
+  return graph[a][b];
 }
 
-bool Weighted_graph::Node::connected(int val) {
-  return connections.member(val);
+double Weighted_graph::distance(int a, int b) {
+
 }
 
-int Weighted_graph::Node::connected() {
-  return val;
+void Weighted_graph::insert(int base, int other, double distance) {
+
+}
+
+void Weighted_graph::destroy() {
+  for (int m = 0; m < x; ++m) {
+    for (int n = 0; n < x; ++n) {
+      graph[m][n] = INFINITY;
+    }
+  }
+
+  for (int i = 0; i < x; ++i) {
+    degree[i] = 0;
+  }
+
+  edges = 0;
 }
 
 const double Weighted_graph::INF = std::numeric_limits<double>::infinity();
