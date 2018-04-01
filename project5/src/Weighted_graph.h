@@ -32,6 +32,8 @@
 
 #include <iostream>
 #include <limits>
+#include <queue>
+#include <list>
 #include "Exception.h"
 
 class Weighted_graph {
@@ -43,6 +45,15 @@ class Weighted_graph {
 
     int size;
     int edges;
+
+    struct pair {
+      int    node;
+      double cost;
+
+      bool operator<(const pair& rhs) const {
+        return weight < rhs.weight;
+      }
+    };
     
 	public:
 		Weighted_graph( int = 50 );
@@ -82,10 +93,16 @@ edges(0) {
   }
 
   graph = new double*[x];
-  // This can be removed for efficency 
+
   graph[0] = 0;
   graph[1] = new double[h];
 
+  // Initialize all nodes to being disconnected
+  for (int i = 0; i < h; ++i) {
+    graph[1][i] = EMPTY_VAL;
+  }
+
+  // Fix pointers for easier use
   for (int i = 2; i < x; ++i) {
     graph[i] = graph[i - 1] + i - 1;    
   }
@@ -119,7 +136,51 @@ double Weighted_graph::adjacent(int a, int b) const {
 }
 
 double Weighted_graph::distance(int a, int b) {
+  std::priority_queue<pair> front_list;
+  std::list<int> visited;
+
+  pair node = {a, 0.0};
   
+  front_list.push(beginning);
+
+  while(!front_list.empty()) {
+    
+    node = front_list.pop();
+
+    if (node.node == b) {
+      return node.cost;
+    }
+
+    if () {
+      continue;
+    }
+
+    visited.push(node.node);
+
+    for (int i = 0; i < size; ++i) {
+      if (i == node.node) {
+        continue;
+      }
+
+      pair temp;
+
+      double cost = peak_matrix(node.node, i);
+
+      // check to see if nodes are connected
+      if (cost != EMPTY_VAL) {
+        
+        if () {
+          temp = {i, node.cost + cost};
+
+          front_list.push(temp);
+        }
+      }
+    }
+
+  }
+
+  // no path
+  return -1;
 }
 
 void Weighted_graph::insert(int base, int other, double distance) {
@@ -129,6 +190,9 @@ void Weighted_graph::insert(int base, int other, double distance) {
                || (other >= size)) {
     throw illegal_argument();
   }
+
+  degree[base] =  degree[base] + 1;
+  degree[other] = degree[others] + 1;
 
   place_matrix(base, other, distance);
 }
