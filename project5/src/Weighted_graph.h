@@ -36,7 +36,7 @@
 
 class Weighted_graph {
 	private:
-    static const double INFINITY;
+    static const double EMPTY_VAL;
     
     double **graph;
     int     *degree;
@@ -44,8 +44,6 @@ class Weighted_graph {
     int size;
     int edges;
     
-		static const double INF;
-
 	public:
 		Weighted_graph( int = 50 );
 		~Weighted_graph();
@@ -55,7 +53,11 @@ class Weighted_graph {
 		double adjacent(int, int) const;
 		double distance(int, int);
 
-		void insert(int, int, double);
+    void insert(int, int, double);
+
+    void   place_matrix(int, int, double);
+    double peak_matrix(int, int);
+    void   rnode_matrix(int, int);
 
     void destroy();
 
@@ -64,24 +66,28 @@ class Weighted_graph {
 	friend std::ostream &operator<<( std::ostream &, Weighted_graph const & );
 };
 
-const double Weighted_graph::INFINITY = std::numeric_milits<double>::infinity();
+const double Weighted_graph::EMPTY_VAL = std::numeric_milits<double>::infinity();
 
 Weighted_graph::Weighted_graph(int x) :
 size(x),
 edges(0) {
 
+  int h;
+
   if (x <= 0) {
-    throw illegal_argument();
+    x = 1;
+    h = 1;
+  } else {
+    h = (x * (x-1)) / 2;
   }
 
-  for (int i = 0; i < x; ++i) {
-    graph[i] = new double[x];
-  }
+  graph = new double*[x];
+  // This can be removed for efficency 
+  graph[0] = 0;
+  graph[1] = new double[h];
 
-  for (int m = 0; m < x; ++m) {
-    for (int n = 0; n < x; ++n) {
-      graph[m][n] = INFINITY;
-    }
+  for (int i = 2; i < x; ++i) {
+    graph[i] = graph[i - 1] + i - 1;    
   }
 
   degree = new int[x];
@@ -92,11 +98,8 @@ edges(0) {
 }
 
 Weighted_graph::~Weighted_graph() {
-  for (int i = 0; i < size; ++i) {
-    delete[] graph[i];
-  }
-
-  delete[] degree;
+  delete[] graph[0];
+  delete[] graph;
 }
 
 int Weighted_graph::degree(int node) const {
@@ -111,29 +114,55 @@ double Weighted_graph::adjacent(int a, int b) const {
   if (a == b) {
     return 0;
   }
-
-  return graph[a][b];
+  
+  return peak_matrix(a, b);
 }
 
 double Weighted_graph::distance(int a, int b) {
-
+  
 }
 
 void Weighted_graph::insert(int base, int other, double distance) {
-  if (w <= 0.0 || w == INF 
+  if (distance <= 0.0 || distance == INF 
                || base == others
                || (base >= size)
                || (other >= size)) {
     throw illegal_argument();
   }
 
+  place_matrix(base, other, distance);
+}
+
+void Weighted_graph::place_matrix(int x, int y, double w) {
+  if (x < y) {
+    graph[y][x] = w;  
+  } else {
+    graph[x][y] = w;  
+  }
+}
+
+double Weighted_graph::peak_matrix(int x, int y) {
+  if (x < y) {
+    return graph[y][x];  
+  } else {
+    return graph[x][y];  
+  }
+}
+
+void Weighted_graph::rnode_matrix(int x, int y) {
+  if (x < y) {
+    graph[y][x] = EMPTY_VAL;  
+  } else {
+    graph[x][y] = EMPTY_VAL;
+  }
 }
 
 void Weighted_graph::destroy() {
-  for (int m = 0; m < x; ++m) {
-    for (int n = 0; n < x; ++n) {
-      graph[m][n] = INFINITY;
-    }
+
+  int h = (size * (size - 1)) / 2;
+
+  for (int i = 0; i < h; ++i) {
+    graph[0][i] = EMPTY_VAL;
   }
 
   for (int i = 0; i < x; ++i) {
@@ -142,8 +171,6 @@ void Weighted_graph::destroy() {
 
   edges = 0;
 }
-
-const double Weighted_graph::INF = std::numeric_limits<double>::infinity();
 
 // Your implementation here
 
