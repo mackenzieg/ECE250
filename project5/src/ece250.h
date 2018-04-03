@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <iostream>
+/* #include <sstream> */
 #include <iomanip>
 #include <string>
 #include <cstring>
@@ -100,7 +101,6 @@ namespace ece250 {
 				return duration;
 			}
 	};
-
 
 	class Allocation {
 		public:
@@ -434,7 +434,7 @@ namespace ece250 {
 		std::memset( ptr, 'U', size );
 	}
 
-	// Type input<Type>()
+/*	// Type input<Type>()
 	//
 	// Attempt to parse the input as if it is of the given Type
 	//  - If it fails, it prints an error message and throws an exception
@@ -487,7 +487,7 @@ namespace ece250 {
 
 			return n;
 		}
-	}
+	} */
 }
 
 /****************************************************************************

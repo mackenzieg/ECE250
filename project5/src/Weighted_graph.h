@@ -43,7 +43,7 @@ class Weighted_graph {
     
     double **graph;
     int     *deg;
-    bool     *visited;
+    bool    *visited;
 
     int size;
     int edges;
@@ -197,7 +197,7 @@ double Weighted_graph::distance(int beg, int end) {
   }
 
   // no path
-  return -1;
+  return INF;
 }
 
 void Weighted_graph::insert(int base, int other, double distance) {
