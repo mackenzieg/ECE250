@@ -39,9 +39,11 @@
 class Weighted_graph {
 	private:
     static const double EMPTY_VAL;
+    static const double INF;
     
     double **graph;
-    int     *degree;
+    int     *deg;
+    bool     *visited;
 
     int size;
     int edges;
@@ -51,9 +53,13 @@ class Weighted_graph {
       double cost;
 
       bool operator<(const pair& rhs) const {
-        return weight < rhs.weight;
+        return cost > rhs.cost;
       }
     };
+
+    void   place_matrix(int, int, double);
+    double peak_matrix(int, int);
+    void   rnode_matrix(int, int);
     
 	public:
 		Weighted_graph( int = 50 );
@@ -66,10 +72,6 @@ class Weighted_graph {
 
     void insert(int, int, double);
 
-    void   place_matrix(int, int, double);
-    double peak_matrix(int, int);
-    void   rnode_matrix(int, int);
-
     void destroy();
 
 	// Friends
@@ -77,7 +79,8 @@ class Weighted_graph {
 	friend std::ostream &operator<<( std::ostream &, Weighted_graph const & );
 };
 
-const double Weighted_graph::EMPTY_VAL = std::numeric_milits<double>::infinity();
+const double Weighted_graph::EMPTY_VAL = std::numeric_limits<double>::infinity();
+const double Weighted_graph::INF       = std::numeric_limits<double>::infinity();
 
 Weighted_graph::Weighted_graph(int x) :
 size(x),
@@ -107,20 +110,24 @@ edges(0) {
     graph[i] = graph[i - 1] + i - 1;    
   }
 
-  degree = new int[x];
+  deg = new int[x];
 
   for (int i = 0; i < x; ++i) {
-    degree[i] = 0;
+    deg[i] = 0;
   }
+
+  visited = new bool[x];
 }
 
 Weighted_graph::~Weighted_graph() {
   delete[] graph[0];
   delete[] graph;
+  delete[] deg;
+  delete[] visited;
 }
 
 int Weighted_graph::degree(int node) const {
-  return degree[node];
+  return deg[node];
 }
 
 int Weighted_graph::edge_count() const {
@@ -131,31 +138,41 @@ double Weighted_graph::adjacent(int a, int b) const {
   if (a == b) {
     return 0;
   }
-  
-  return peak_matrix(a, b);
+
+  if (a > b) {
+    return graph[a][b];
+  } else {
+    return graph[b][a];
+  }
 }
 
-double Weighted_graph::distance(int a, int b) {
+double Weighted_graph::distance(int beg, int end) {
   std::priority_queue<pair> front_list;
-  std::list<int> visited;
 
-  pair node = {a, 0.0};
+  for (int i = 0; i < size; ++i) {
+    visited[i] = false;
+  }
+
+  pair node = {beg, 0.0};
   
-  front_list.push(beginning);
+  front_list.push(node);
 
   while(!front_list.empty()) {
     
-    node = front_list.pop();
+    node = front_list.top();
 
-    if (node.node == b) {
+    front_list.pop();
+
+    if (node.node == end) {
       return node.cost;
     }
 
-    if () {
+    // Check if already visted. Make this a bool array
+    if (visited[node.node]) {
       continue;
     }
 
-    visited.push(node.node);
+    visited[node.node] = true;
 
     for (int i = 0; i < size; ++i) {
       if (i == node.node) {
@@ -169,8 +186,8 @@ double Weighted_graph::distance(int a, int b) {
       // check to see if nodes are connected
       if (cost != EMPTY_VAL) {
         
-        if () {
-          temp = {i, node.cost + cost};
+        if (!visited[i]) {
+          temp = {i, (node.cost + cost)};
 
           front_list.push(temp);
         }
@@ -185,14 +202,14 @@ double Weighted_graph::distance(int a, int b) {
 
 void Weighted_graph::insert(int base, int other, double distance) {
   if (distance <= 0.0 || distance == INF 
-               || base == others
+               || base == other
                || (base >= size)
                || (other >= size)) {
     throw illegal_argument();
   }
 
-  degree[base] =  degree[base] + 1;
-  degree[other] = degree[others] + 1;
+  deg[base] =  deg[base] + 1;
+  deg[other] = deg[other] + 1;
 
   place_matrix(base, other, distance);
 }
@@ -222,15 +239,14 @@ void Weighted_graph::rnode_matrix(int x, int y) {
 }
 
 void Weighted_graph::destroy() {
-
   int h = (size * (size - 1)) / 2;
 
   for (int i = 0; i < h; ++i) {
     graph[0][i] = EMPTY_VAL;
   }
 
-  for (int i = 0; i < x; ++i) {
-    degree[i] = 0;
+  for (int i = 0; i < size; ++i) {
+    deg[i] = 0;
   }
 
   edges = 0;
