@@ -34,6 +34,7 @@
 #include <limits>
 #include <queue>
 #include <list>
+#include <cstring>
 #include "Exception.h"
 
 class Weighted_graph {
@@ -110,15 +111,13 @@ edges(0) {
 
   deg = new int[x];
 
-  for (int i = 0; i < x; ++i) {
-    deg[i] = 0;
-  }
+  memset(deg, 0, x);
 
   visited = new bool[x];
 }
 
 Weighted_graph::~Weighted_graph() {
-  delete[] graph[0];
+  delete[] graph[1];
   delete[] graph;
   delete[] deg;
   delete[] visited;
@@ -147,9 +146,7 @@ double Weighted_graph::adjacent(int a, int b) const {
 double Weighted_graph::distance(int beg, int end) {
   std::priority_queue<pair> front_list;
 
-  for (int i = 0; i < size; ++i) {
-    visited[i] = false;
-  }
+  memset(visited, 0, size);
 
   pair node = {beg, 0.0};
   
@@ -199,15 +196,22 @@ double Weighted_graph::distance(int beg, int end) {
 }
 
 void Weighted_graph::insert(int base, int other, double distance) {
-  if (distance <= 0.0 || distance == INF 
+  if (distance <= 0.0
+               || distance == INF 
                || base == other
                || (base >= size)
-               || (other >= size)) {
+               || (other >= size)
+               || (base < 0)
+               || (other < 0)) {
     throw illegal_argument();
   }
 
-  deg[base] =  deg[base] + 1;
-  deg[other] = deg[other] + 1;
+  // Only increase degree if we are inserting a new edge
+  if (peak_matrix(base, other) == INF) {
+    ++edges;
+    deg[base] =  deg[base] + 1;
+    deg[other] = deg[other] + 1;
+  }
 
   place_matrix(base, other, distance);
 }
@@ -240,8 +244,10 @@ void Weighted_graph::destroy() {
   int h = (size * (size - 1)) / 2;
 
   for (int i = 0; i < h; ++i) {
-    graph[0][i] = INF;
+    graph[1][i] = INF;
   }
+
+  memset(deg, 0, size);
 
   for (int i = 0; i < size; ++i) {
     deg[i] = 0;

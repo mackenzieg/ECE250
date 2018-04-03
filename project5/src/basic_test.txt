@@ -1,0 +1,7 @@
+new
+
+insert 0 1 100
+distance 0 1 100
+
+delete
+summary

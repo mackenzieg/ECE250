@@ -9,7 +9,10 @@ int main() {
   graph.insert(0, 9, 14);
 
   graph.insert(0, 1, 10);
+  graph.insert(0, 1, 5);
   graph.insert(1, 9, 5);
 
   cout << graph.distance(0, 9) << endl;
+
+  cout << graph.degree(0) << endl;
 }

@@ -4,7 +4,7 @@ SOURCES := Weighted_graph.h
 SOURCES += Exception.h
 SOURCES += Tester.h
 SOURCES += ece250.h
-#SOURCES += Test.cpp
+#OURCES += Test.cpp
 SOURCES += Weighted_graph_tester.h
 SOURCES += Weighted_graph_driver.cpp
 
