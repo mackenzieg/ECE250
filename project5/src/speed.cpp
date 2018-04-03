@@ -7,8 +7,8 @@
 // while the final version may use some version of a bitwise operation.
 
 int main() {
-	int const LIMIT = 12;  // This number is subject to change
-	int N = 8;
+	int const LIMIT = 8;  // This number is subject to change
+	int N = 9;
 
 	double sum = 0.0;
 
