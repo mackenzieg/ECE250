@@ -55,6 +55,14 @@ class Weighted_graph {
       bool operator<(const pair& rhs) const {
         return cost > rhs.cost;
       }
+
+      bool operator>(const pair& rhs) const {
+        return cost < rhs.cost;
+      }
+
+      //bool operator=(const pair& rhs) const {
+      //  return cost == rhs.cost;
+      //}
     };
 
     void   place_matrix(int, int, double);
@@ -162,7 +170,7 @@ double Weighted_graph::distance(int beg, int end) {
       return node.cost;
     }
 
-    // Check if already visted. Make this a bool array
+    // Check if already visted.
     if (visited[node.node]) {
       continue;
     }
@@ -174,17 +182,14 @@ double Weighted_graph::distance(int beg, int end) {
         continue;
       }
 
-      pair temp;
-
       double cost = peak_matrix(node.node, i);
 
       // check to see if nodes are connected
       if (cost != INF) {
         
         if (!visited[i]) {
-          temp = {i, (node.cost + cost)};
 
-          front_list.push(temp);
+          front_list.push({i, (node.cost + cost)});
         }
       }
     }
@@ -252,8 +257,6 @@ void Weighted_graph::destroy() {
   for (int i = 0; i < size; ++i) {
     deg[i] = 0;
   }
-
-  edges = 0;
 }
 
 // Your implementation here
