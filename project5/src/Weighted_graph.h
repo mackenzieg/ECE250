@@ -42,8 +42,12 @@ class Weighted_graph {
     static const double INF;
     
     double **graph;
+    double  *dis;
     int     *deg;
     bool    *visited;
+
+    // Determines if the distance array is dirty or not
+    bool dis_dirty;
 
     int size;
     int edges;
@@ -55,14 +59,6 @@ class Weighted_graph {
       bool operator<(const pair& rhs) const {
         return cost > rhs.cost;
       }
-
-      bool operator>(const pair& rhs) const {
-        return cost < rhs.cost;
-      }
-
-      //bool operator=(const pair& rhs) const {
-      //  return cost == rhs.cost;
-      //}
     };
 
     void   place_matrix(int, int, double);
@@ -71,7 +67,7 @@ class Weighted_graph {
     
 	public:
 		Weighted_graph( int = 50 );
-		~Weighted_graph();
+		~Weighted_graph(); 
 
 		int degree(int) const;
 		int edge_count() const;
@@ -91,8 +87,8 @@ const double Weighted_graph::INF       = std::numeric_limits<double>::infinity()
 
 Weighted_graph::Weighted_graph(int x) :
 size(x),
-edges(0) {
-
+edges(0),
+dis_dirty(true) {
   int h;
 
   if (x <= 0) {
@@ -112,6 +108,12 @@ edges(0) {
     graph[1][i] = INF;
   }
 
+  dis = new double[size];
+
+  for (int i = 0; i < size; ++i) {
+    dis[i] = INF;
+  }
+
   // Fix pointers for easier use
   for (int i = 2; i < x; ++i) {
     graph[i] = graph[i - 1] + i - 1;    
@@ -127,6 +129,7 @@ edges(0) {
 Weighted_graph::~Weighted_graph() {
   delete[] graph[1];
   delete[] graph;
+  delete[] dis;
   delete[] deg;
   delete[] visited;
 }
@@ -152,52 +155,77 @@ double Weighted_graph::adjacent(int a, int b) const {
 }
 
 double Weighted_graph::distance(int beg, int end) {
+  if (beg < 0 || end < 0 || beg >= size || end >= size) {
+    throw illegal_argument();
+  }
+
+  if (beg == end) {
+    return 0;
+  }
+
+  // Distances were already calculated from last run
+  if (!dis_dirty && dis[beg] == 0) {
+    return dis[end];
+  }
+
   std::priority_queue<pair> front_list;
 
+  // Set distances to inf for all nodes
+  for (int i = 0; i < size; ++i) {
+    dis[i] = INF;
+  }
+
+  // Distance to beginning node is always 0
+  dis[beg] = 0;
+
+  // Copy zeros into memory for visited nodes
   memset(visited, 0, size);
 
-  pair node = {beg, 0.0};
-  
-  front_list.push(node);
+  // Push on beginning node
+  front_list.push({beg, 0.0});
 
-  while(!front_list.empty()) {
-    
-    node = front_list.top();
+  while (!front_list.empty()) {
+    // Pop off min element
+    pair node = front_list.top();
 
     front_list.pop();
-
-    if (node.node == end) {
-      return node.cost;
-    }
 
     // Check if already visted.
     if (visited[node.node]) {
       continue;
     }
 
+    // We are now visiting the node so set to true
     visited[node.node] = true;
 
     for (int i = 0; i < size; ++i) {
+      // Check for connections. Skip over connection to itself
       if (i == node.node) {
         continue;
       }
 
+      // Get cost of current node to its connection
       double cost = peak_matrix(node.node, i);
 
-      // check to see if nodes are connected
+      // Cost will not be INF if they are connected. Could also use adjacent function
+      // but don't want to waste a function call overhead
       if (cost != INF) {
-        
-        if (!visited[i]) {
-
-          front_list.push({i, (node.cost + cost)});
+        // If haven't visited the node and the new cost is lower
+        if (!visited[i] && dis[node.node] + cost < dis[i]) {
+          // Update lower cost
+          dis[i] = dis[node.node] + cost;
+          // Push on new distance to heap
+          front_list.push({i, dis[i]});
         }
       }
     }
-
   }
 
-  // no path
-  return INF;
+  // Distances have been updated and are no longer dirty
+  dis_dirty = false;
+
+  // Return distance to node
+  return dis[end];
 }
 
 void Weighted_graph::insert(int base, int other, double distance) {
@@ -211,6 +239,8 @@ void Weighted_graph::insert(int base, int other, double distance) {
     throw illegal_argument();
   }
 
+  dis_dirty = true;
+
   // Only increase degree if we are inserting a new edge
   if (peak_matrix(base, other) == INF) {
     ++edges;
@@ -220,7 +250,7 @@ void Weighted_graph::insert(int base, int other, double distance) {
 
   place_matrix(base, other, distance);
 }
-
+ 
 void Weighted_graph::place_matrix(int x, int y, double w) {
   if (x < y) {
     graph[y][x] = w;  
@@ -257,6 +287,8 @@ void Weighted_graph::destroy() {
   for (int i = 0; i < size; ++i) {
     deg[i] = 0;
   }
+
+  dis_dirty = true;
 }
 
 // Your implementation here
