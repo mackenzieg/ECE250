@@ -38,7 +38,6 @@
 
 class Weighted_graph {
 	private:
-    static const double EMPTY_VAL;
     static const double INF;
     
     double **graph;
@@ -79,7 +78,6 @@ class Weighted_graph {
 	friend std::ostream &operator<<( std::ostream &, Weighted_graph const & );
 };
 
-const double Weighted_graph::EMPTY_VAL = std::numeric_limits<double>::infinity();
 const double Weighted_graph::INF       = std::numeric_limits<double>::infinity();
 
 Weighted_graph::Weighted_graph(int x) :
@@ -102,7 +100,7 @@ edges(0) {
 
   // Initialize all nodes to being disconnected
   for (int i = 0; i < h; ++i) {
-    graph[1][i] = EMPTY_VAL;
+    graph[1][i] = INF;
   }
 
   // Fix pointers for easier use
@@ -184,7 +182,7 @@ double Weighted_graph::distance(int beg, int end) {
       double cost = peak_matrix(node.node, i);
 
       // check to see if nodes are connected
-      if (cost != EMPTY_VAL) {
+      if (cost != INF) {
         
         if (!visited[i]) {
           temp = {i, (node.cost + cost)};
@@ -232,9 +230,9 @@ double Weighted_graph::peak_matrix(int x, int y) {
 
 void Weighted_graph::rnode_matrix(int x, int y) {
   if (x < y) {
-    graph[y][x] = EMPTY_VAL;  
+    graph[y][x] = INF;  
   } else {
-    graph[x][y] = EMPTY_VAL;
+    graph[x][y] = INF;
   }
 }
 
@@ -242,7 +240,7 @@ void Weighted_graph::destroy() {
   int h = (size * (size - 1)) / 2;
 
   for (int i = 0; i < h; ++i) {
-    graph[0][i] = EMPTY_VAL;
+    graph[0][i] = INF;
   }
 
   for (int i = 0; i < size; ++i) {
