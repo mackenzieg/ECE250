@@ -127,6 +127,7 @@ dis_dirty(true) {
 }
 
 Weighted_graph::~Weighted_graph() {
+  // Clean up all arrays
   delete[] graph[1];
   delete[] graph;
   delete[] dis;
@@ -147,6 +148,7 @@ double Weighted_graph::adjacent(int a, int b) const {
     return 0;
   }
 
+  // TODO use peak_matrix just make it const
   if (a > b) {
     return graph[a][b];
   } else {
@@ -239,6 +241,7 @@ void Weighted_graph::insert(int base, int other, double distance) {
     throw illegal_argument();
   }
 
+  // Distance matrix is dirty since new edge was inserted
   dis_dirty = true;
 
   // Only increase degree if we are inserting a new edge
@@ -260,6 +263,7 @@ void Weighted_graph::place_matrix(int x, int y, double w) {
 }
 
 double Weighted_graph::peak_matrix(int x, int y) {
+  // Always use larger node to index matrix
   if (x < y) {
     return graph[y][x];  
   } else {
@@ -276,8 +280,10 @@ void Weighted_graph::rnode_matrix(int x, int y) {
 }
 
 void Weighted_graph::destroy() {
+  // Calculate the sum of size -> 0 to get length of half matrix
   int h = (size * (size - 1)) / 2;
 
+  // Reset all connections in half matrix
   for (int i = 0; i < h; ++i) {
     graph[1][i] = INF;
   }
@@ -288,6 +294,7 @@ void Weighted_graph::destroy() {
     deg[i] = 0;
   }
 
+  // Set matrix to dirty
   dis_dirty = true;
 }
 

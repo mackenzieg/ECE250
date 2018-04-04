@@ -2,12 +2,12 @@ PROJ := wg
 
 SOURCES := Weighted_graph.h
 SOURCES += Exception.h
-#SOURCES += Tester.h
-#SOURCES += ece250.h
-#SOURCES += Weighted_graph_tester.h
-#SOURCES += Weighted_graph_driver.cpp
+SOURCES += Tester.h
+SOURCES += ece250.h
+SOURCES += Weighted_graph_tester.h
+SOURCES += Weighted_graph_driver.cpp
 #SOURCES += Test.cpp
-SOURCES += speed.cpp
+#SOURCES += speed.cpp
 #SOURCES += speed2.cpp
 
 CFLAGS := -DDEBUG_PRINT
